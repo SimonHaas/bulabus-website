@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7f0">
+    <meta name="description" content="Get the BulaBus app for iPhone or Android.">
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+    <title>Get BulaBus</title>
+    <style>
+      .app-page { min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; }
+      .app-main { width: min(100% - 40px, 620px); margin: auto; padding: 65px 0 90px; text-align: center; }
+      .app-mark { width: 62px; height: 62px; margin: 0 auto 26px; border-radius: 19px; box-shadow: 0 10px 26px #12292719; }
+      .app-kicker { margin-bottom: 15px; color: var(--green); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+      .app-main h1 { margin: 0 auto 16px; font-size: clamp(40px, 8vw, 64px); line-height: 1.03; }
+      .app-main h1 em { color: var(--green); font-style: normal; }
+      .app-intro { max-width: 440px; margin: 0 auto 34px; color: var(--muted); font-size: 14px; line-height: 1.7; }
+      .app-status { width: min(100%, 440px); min-height: 55px; display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 auto 27px; padding: 12px 18px; border: 1px solid var(--line); border-radius: 13px; background: #ffffffa8; color: var(--muted); font-size: 12px; line-height: 1.5; }
+      .app-status::before { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: var(--coral); content: ''; }
+      .store-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: min(100%, 440px); margin: 0 auto; }
+      .store-card { display: grid; justify-items: start; gap: 6px; min-height: 83px; padding: 18px; border: 1px solid var(--line); border-radius: 15px; background: white; text-align: left; transition: transform .18s ease, border-color .18s ease; }
+      .store-card:hover { transform: translateY(-2px); border-color: #9db8aa; }
+      .store-card strong { font-size: 12px; }
+      .store-card span { color: var(--muted); font-size: 10px; }
+      .app-home { display: inline-block; margin-top: 27px; color: var(--green); font-size: 11px; font-weight: 700; }
+      .app-home span { padding-right: 7px; }
+      .app-footer { min-height: 75px; display: flex; align-items: center; justify-content: center; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+      .app-footer span { padding: 0 4px; color: var(--coral); }
+      @media (max-width: 460px) { .app-main { padding-top: 44px; } .store-options { grid-template-columns: 1fr; } .store-card { min-height: 70px; } }
+    </style>
+  </head>
+  <body class="app-page">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="BulaBus home">
+        <img src="/assets/brand-mark.svg" alt="" width="42" height="42">
+        <span class="brand-copy"><strong>BULA BUS</strong><small>FIJI, ON THE MOVE</small></span>
+      </a>
+    </header>
+    <main class="app-main">
+      <img class="app-mark" src="/assets/brand-mark.svg" alt="" width="62" height="62">
+      <p class="app-kicker">A little help. A clearer picture.</p>
+      <h1>Take BulaBus<br><em>with you.</em></h1>
+      <p class="app-intro">BulaBus is building a community-powered way to make bus journeys easier across Fiji. Pick your phone’s store below.</p>
+      <p class="app-status" id="store-status" role="status" aria-live="polite">Checking your device…</p>
+      <div class="store-options" aria-label="Choose your app store">
+        <a class="store-card" id="ios-store" href="#ios-store"><strong>App Store</strong><span>For iPhone and iPad · Coming soon</span></a>
+        <a class="store-card" id="android-store" href="#android-store"><strong>Google Play</strong><span>For Android · Coming soon</span></a>
+      </div>
+      <a class="app-home" href="/"><span aria-hidden="true">←</span> Back to BulaBus</a>
+    </main>
+    <footer class="app-footer">Made with <span aria-label="love">♥</span> in Fiji</footer>
+    <script>
+      // Replace these placeholders with the published store listing URLs.
+      const STORE_URLS = {
+        ios: 'https://apps.apple.com/app/idREPLACE_WITH_APP_ID',
+        android: 'https://play.google.com/store/apps/details?id=REPLACE_WITH_ANDROID_PACKAGE',
+      };
+
+      const isPlaceholder = (url) => /REPLACE_WITH/i.test(url);
+      const ua = navigator.userAgent || '';
+      const isIOS = /iPad|iPhone|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isAndroid = /Android/i.test(ua);
+      const platform = isIOS ? 'ios' : isAndroid ? 'android' : null;
+      const status = document.getElementById('store-status');
+      const iosLink = document.getElementById('ios-store');
+      const androidLink = document.getElementById('android-store');
+
+      for (const [key, link] of [['ios', iosLink], ['android', androidLink]]) {
+        if (!isPlaceholder(STORE_URLS[key])) {
+          link.href = STORE_URLS[key];
+          link.querySelector('span').textContent = key === 'ios' ? 'Download for iPhone and iPad' : 'Download for Android';
+        }
+      }
+
+      if (platform && !isPlaceholder(STORE_URLS[platform])) {
+        status.textContent = 'Opening the ' + (platform === 'ios' ? 'App Store' : 'Google Play') + '…';
+        window.location.replace(STORE_URLS[platform]);
+      } else if (platform) {
+        status.textContent = 'The ' + (platform === 'ios' ? 'iPhone and iPad' : 'Android') + ' app link will be added here when BulaBus is published.';
+      } else {
+        status.textContent = 'Choose your app store. Store links will be ready when BulaBus is published.';
+      }
+    </script>
+  </body>
+</html>
