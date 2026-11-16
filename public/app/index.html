@@ -70,6 +70,9 @@
         if (!isPlaceholder(STORE_URLS[key])) {
           link.href = STORE_URLS[key];
           link.querySelector('span').textContent = key === 'ios' ? 'Download for iPhone and iPad' : 'Download for Android';
+        } else {
+          link.removeAttribute('href');
+          link.setAttribute('aria-disabled', 'true');
         }
       }
 
